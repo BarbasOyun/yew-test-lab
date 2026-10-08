@@ -967,6 +967,7 @@ dependencies = [
 name = "yux-test-lab"
 version = "0.1.0"
 dependencies = [
+ "implicit-clone",
  "yew",
  "yew-router",
 ]

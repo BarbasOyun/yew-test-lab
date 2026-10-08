@@ -1,9 +1,27 @@
 use yew::{Callback, Properties, TargetCast, html, prelude::*};
+use implicit_clone::unsync::IString;
+
+#[derive(Clone, Default, PartialEq)]
+pub struct TestLab {
+    pub name_state: NameProps,
+}
+
+pub enum TestLabAction {
+    UpdateNames(NameProps),
+}
+
+impl TestLab {
+    pub fn reduce(&mut self, action: TestLabAction) {
+        match action {
+            TestLabAction::UpdateNames(new_name) => self.name_state = new_name,
+        }
+    }
+}
 
 #[component]
-pub fn TestLab() -> Html {
-    let name_state = use_state(|| yew::props!(NameProps {}));
-    
+pub fn TestLabPanel() -> Html {
+    let name_state = use_state(|| NameProps::default());
+
     html! { <p>
     <CharName name_gen={(*name_state).clone()}/>
     </p> }
@@ -11,17 +29,24 @@ pub fn TestLab() -> Html {
 
 #[derive(Properties, PartialEq, Clone)]
 pub struct NameProps {
-    #[prop_or(AttrValue::Static("Default Name"))]
     pub name: AttrValue,
-    #[prop_or(AttrValue::Static("Default Family Name"))]
     pub family_name: AttrValue,
-    #[prop_or(AttrValue::Static("Default Title"))]
     pub title: AttrValue,
+}
+
+impl Default for NameProps {
+    fn default() -> Self {
+        NameProps {
+            name: IString::from("Default Name"),
+            family_name: IString::from("Default Family Name"),
+            title: IString::from("Default Title"),
+        }
+    }
 }
 
 #[derive(Properties, PartialEq)]
 pub struct NameGenProps {
-    name_gen: NameProps,
+    pub name_gen: NameProps,
 }
 
 #[component]
