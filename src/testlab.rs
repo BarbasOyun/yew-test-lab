@@ -1,22 +1,7 @@
+use crate::TestLab;
+
 use yew::{Callback, Properties, TargetCast, html, prelude::*};
 use implicit_clone::unsync::IString;
-
-#[derive(Clone, Default, PartialEq)]
-pub struct TestLab {
-    pub name_state: NameProps,
-}
-
-pub enum TestLabAction {
-    UpdateNames(NameProps),
-}
-
-impl TestLab {
-    pub fn reduce(&mut self, action: TestLabAction) {
-        match action {
-            TestLabAction::UpdateNames(new_name) => self.name_state = new_name,
-        }
-    }
-}
 
 #[component]
 pub fn TestLabPanel() -> Html {
