@@ -79,6 +79,8 @@ pub fn nav_items() -> Html {
 
 #[component]
 pub fn Home() -> Html {
+    let store = use_context::<UseReducerHandle<YewTestLab>>().expect("No Store Context");
+
     html! {<>
     <h1>{ "Home" }</h1>
     <h2>{ "Yew Test Lab" }</h2>
@@ -86,7 +88,7 @@ pub fn Home() -> Html {
     <br />
     <Counter />
     <br />
-    <CharName />
+    <CharName name_state={store.name_state.clone()} />
     <ChangeNameButton />
     </>
     }

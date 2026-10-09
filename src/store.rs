@@ -6,13 +6,14 @@ pub enum StoreEffect {
     Increment,
     Decrement,
     UpdateNames(NameProps),
+    Patch, // TODO
 }
 
-// Store
+// Store -> Survive page change
 #[derive(Clone, Default, PartialEq)]
 pub struct YewTestLab {
     pub count: i32,
-    pub test_lab: TestLab,
+    pub name_state: NameProps,
 }
 
 impl Reducible for YewTestLab {
@@ -29,6 +30,7 @@ impl Reducible for YewTestLab {
             StoreEffect::UpdateNames(_) => {
                 state.reduce_name_effect(action);
             }
+            _ => (),
         }
 
         new_state
@@ -46,7 +48,7 @@ impl YewTestLab {
 
     fn reduce_name_effect(&mut self, action: StoreEffect) {
         if let StoreEffect::UpdateNames(new_name) = action {
-            self.test_lab.name_state = new_name;
+            self.name_state = new_name;
         }
     }
 }
@@ -66,14 +68,4 @@ impl Default for NameProps {
             title: IString::from("Default Title"),
         }
     }
-}
-
-#[derive(Clone, PartialEq, Default)]
-pub struct CounterState {
-    pub count: i32,
-}
-
-#[derive(Clone, Default, PartialEq)]
-pub struct TestLab {
-    pub name_state: NameProps,
 }
