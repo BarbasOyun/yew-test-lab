@@ -14,6 +14,7 @@ pub enum TestLabEffect {
     UpdateNames(NameProps),
 }
 
+// Reduced Style 2
 impl Reducible for TestLab {
     type Action = TestLabEffect;
 
@@ -26,23 +27,7 @@ impl Reducible for TestLab {
                 });
             }
         }
-
-        // let mut new_state = self;
-        // let state = Rc::make_mut(&mut new_state);
-
-        // match action {
-        //     TestLabEffect::UpdateNames(new_name) => {
-        //         state.name_state = new_name;
-        //     }
-        // }
-
-        // new_state
     }
-}
-
-#[derive(Properties, PartialEq)]
-pub struct CharNameProps {
-    pub name_state: NameProps,
 }
 
 // COMPONENTS
@@ -54,10 +39,11 @@ pub fn TestLabPanel() -> Html {
 
     html! { <p>
     <ContextProvider<UseReducerHandle<TestLab>> context={page_state.clone()}>
-        <CharName name_state={store.name_state.clone()} />
-        <CharName name_state={page_state.name_state.clone()} />
+        {"Global Data"}
+        {char_name(store.name_state.clone())}
         <br />
-        {test(page_state.name_state.clone())}
+        {"Page Data :"}
+        {char_name(page_state.name_state.clone())}
         <br />
         <ChangeNameButton />
     </ContextProvider<UseReducerHandle<TestLab>>>
@@ -65,16 +51,7 @@ pub fn TestLabPanel() -> Html {
 }
 
 #[component]
-pub fn CharName(props: &CharNameProps) -> Html {
-    html! { <p>
-    {"Name : "}{&props.name_state.name}<br />
-    {"Family Name : "}{&props.name_state.family_name}<br />
-    {"Title : "}{&props.name_state.title}<br />
-    </p> }
-}
-
-#[component]
-pub fn CharName2(props: &NameProps) -> Html {
+pub fn CharName(props: &NameProps) -> Html {
     html! { <p>
     {"Name : "}{&props.name}<br />
     {"Family Name : "}{&props.family_name}<br />
@@ -82,15 +59,16 @@ pub fn CharName2(props: &NameProps) -> Html {
     </p> }
 }
 
-fn test(props: NameProps) -> VNode {
+pub fn char_name(props: NameProps) -> VNode {
     html! { <p>
-    <CharName2 name={props.name} family_name={props.family_name} title={props.title} />
+    <CharName name={props.name} family_name={props.family_name} title={props.title} />
     </p> }
 }
 
+/// Update Page Names
 #[function_component(ChangeNameButton)]
 fn change_names() -> Html {
-    let store = use_context::<UseReducerHandle<YewTestLab>>().expect("No Store Context");
+    // let store = use_context::<UseReducerHandle<YewTestLab>>().expect("No Store Context");
     let page_state = use_context::<UseReducerHandle<TestLab>>().expect("No Page Context");
 
     let change_names = {

@@ -2,7 +2,7 @@ mod store;
 mod testlab;
 
 use crate::store::{YewTestLab, StoreEffect, NameProps};
-use crate::testlab::{CharName, TestLabPanel};
+use crate::testlab::{TestLabPanel, char_name};
 
 use yew::{Callback, Properties, html, prelude::*};
 use yew_router::prelude::*;
@@ -88,32 +88,9 @@ pub fn Home() -> Html {
     <br />
     <Counter />
     <br />
-    <CharName name_state={store.name_state.clone()} />
+    {char_name(store.name_state.clone())}
     <ChangeNameButton />
     </>
-    }
-}
-
-#[function_component(ChangeNameButton)]
-fn change_names() -> Html {
-    let store = use_context::<UseReducerHandle<YewTestLab>>()
-        .expect("No Store Context");
-
-    let change_names = {
-        let store = store.clone();
-        Callback::from(move |_| {
-            store.dispatch(StoreEffect::UpdateNames(NameProps {
-                name: IString::from("Uriel"),
-                family_name: IString::from("Kiel"),
-                title: IString::from("Pain Seeker"),
-            }))
-        })
-    };
-
-    html! {
-        <div>
-            <button onclick={change_names}>{ "Change Names" }</button>
-        </div>
     }
 }
 
@@ -138,6 +115,30 @@ pub fn counter() -> Html {
             <p>{ format!("Count: {}", store.count) }</p>
             <button onclick={on_increment}>{ "+1" }</button>
             <button onclick={on_decrement}>{ "-1" }</button>
+        </div>
+    }
+}
+
+/// Update Global Names
+#[function_component(ChangeNameButton)]
+fn change_names() -> Html {
+    let store = use_context::<UseReducerHandle<YewTestLab>>()
+        .expect("No Store Context");
+
+    let change_names = {
+        let store = store.clone();
+        Callback::from(move |_| {
+            store.dispatch(StoreEffect::UpdateNames(NameProps {
+                name: IString::from("Uriel"),
+                family_name: IString::from("Kiel"),
+                title: IString::from("Pain Seeker"),
+            }))
+        })
+    };
+
+    html! {
+        <div>
+            <button onclick={change_names}>{ "Change Names" }</button>
         </div>
     }
 }

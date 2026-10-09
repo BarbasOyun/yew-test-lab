@@ -16,6 +16,7 @@ pub struct YewTestLab {
     pub name_state: NameProps,
 }
 
+// Reduced Style 1
 impl Reducible for YewTestLab {
     type Action = StoreEffect;
 
