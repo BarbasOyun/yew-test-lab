@@ -74,12 +74,6 @@ fn main() {
 fn App() -> Html {
     let store = use_reducer(YewTestLab::default);
 
-    // html! {
-    //     <BrowserRouter>
-    //         <NavItems />
-    //         <Switch<Route> render={switch} />
-    //     </BrowserRouter>
-    // }
     html! {
         <ContextProvider<UseReducerHandle<YewTestLab>> context={store}>
             <BrowserRouter>
@@ -152,7 +146,7 @@ pub fn Home() -> Html {
     <br />
     <Counter />
     <br />
-    <CharName name_gen={store.test_lab.name_state.clone()}/>
+    <CharName />
     <ChangeNameButton />
     </>
     }
@@ -160,7 +154,8 @@ pub fn Home() -> Html {
 
 #[function_component(ChangeNameButton)]
 fn change_names() -> Html {
-    let store = use_reducer(YewTestLab::default);
+    let store = use_context::<UseReducerHandle<YewTestLab>>()
+        .expect("NameDisplay must be wrapped in ContextProvider");
 
     let change_names = {
         let store = store.clone();

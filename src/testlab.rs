@@ -1,14 +1,12 @@
-use crate::TestLab;
+use crate::{YewTestLab, TestLab};
 
 use yew::{Callback, Properties, TargetCast, html, prelude::*};
 use implicit_clone::unsync::IString;
 
 #[component]
 pub fn TestLabPanel() -> Html {
-    let name_state = use_state(|| NameProps::default());
-
     html! { <p>
-    <CharName name_gen={(*name_state).clone()}/>
+    <CharName />
     </p> }
 }
 
@@ -29,16 +27,15 @@ impl Default for NameProps {
     }
 }
 
-#[derive(Properties, PartialEq)]
-pub struct NameGenProps {
-    pub name_gen: NameProps,
-}
-
 #[component]
-pub fn CharName(props: &NameGenProps) -> Html {
+pub fn CharName() -> Html {
+    let store = use_context::<UseReducerHandle<YewTestLab>>()
+        .expect("NameDisplay must be wrapped in ContextProvider");
+    let name_state = &store.test_lab.name_state;
+
     html! { <p>
-    {"Name : "}{&props.name_gen.name}<br />
-    {"Family Name : "}{&props.name_gen.family_name}<br />
-    {"Title : "}{&props.name_gen.title}<br />
+    {"Name : "}{&name_state.name}<br />
+    {"Family Name : "}{&name_state.family_name}<br />
+    {"Title : "}{&name_state.title}<br />
     </p> }
 }
