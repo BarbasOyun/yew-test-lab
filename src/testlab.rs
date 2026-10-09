@@ -1,4 +1,4 @@
-use crate::{YewTestLab, TestLab};
+use crate::{YewTestLab};
 
 use yew::{Callback, Properties, TargetCast, html, prelude::*};
 use implicit_clone::unsync::IString;
@@ -8,23 +8,6 @@ pub fn TestLabPanel() -> Html {
     html! { <p>
     <CharName />
     </p> }
-}
-
-#[derive(Properties, PartialEq, Clone)]
-pub struct NameProps {
-    pub name: AttrValue,
-    pub family_name: AttrValue,
-    pub title: AttrValue,
-}
-
-impl Default for NameProps {
-    fn default() -> Self {
-        NameProps {
-            name: IString::from("Default Name"),
-            family_name: IString::from("Default Family Name"),
-            title: IString::from("Default Title"),
-        }
-    }
 }
 
 #[component]

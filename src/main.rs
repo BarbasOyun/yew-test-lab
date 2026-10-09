@@ -1,70 +1,12 @@
+mod store;
 mod testlab;
 
-use crate::testlab::{CharName, NameProps, TestLabPanel};
+use crate::store::{YewTestLab, StoreEffect, NameProps};
+use crate::testlab::{CharName, TestLabPanel};
 
-use std::rc::Rc;
 use yew::{Callback, Properties, html, prelude::*};
 use yew_router::prelude::*;
 use implicit_clone::unsync::IString;
-
-pub enum StoreEffect {
-    Increment,
-    Decrement,
-    UpdateNames(NameProps),
-}
-
-// Store
-#[derive(Clone, Default, PartialEq)]
-struct YewTestLab {
-    count: i32,
-    test_lab: TestLab,
-}
-
-impl Reducible for YewTestLab {
-    type Action = StoreEffect;
-
-    fn reduce(self: Rc<Self>, action: Self::Action) -> Rc<Self> {
-        let mut new_state = self;
-        let state = Rc::make_mut(&mut new_state);
-
-        match action {
-            StoreEffect::Increment | StoreEffect::Decrement => {
-                state.reduce_counter_effect(action);
-            }
-            StoreEffect::UpdateNames(_) => {
-                state.reduce_name_effect(action);
-            }
-        }
-
-        new_state
-    }
-}
-
-impl YewTestLab {
-    fn reduce_counter_effect(&mut self, action: StoreEffect) {
-        match action {
-            StoreEffect::Increment => self.count += 1,
-            StoreEffect::Decrement => self.count -= 1,
-            _ => unreachable!(),
-        }
-    }
-
-    fn reduce_name_effect(&mut self, action: StoreEffect) {
-        if let StoreEffect::UpdateNames(new_name) = action {
-            self.test_lab.name_state = new_name;
-        }
-    }
-}
-
-#[derive(Clone, PartialEq, Default)]
-pub struct CounterState {
-    pub count: i32,
-}
-
-#[derive(Clone, Default, PartialEq)]
-pub struct TestLab {
-    pub name_state: NameProps,
-}
 
 fn main() {
     yew::Renderer::<App>::new().render();
@@ -137,8 +79,6 @@ pub fn nav_items() -> Html {
 
 #[component]
 pub fn Home() -> Html {
-    let store = use_reducer(YewTestLab::default);
-
     html! {<>
     <h1>{ "Home" }</h1>
     <h2>{ "Yew Test Lab" }</h2>
@@ -155,7 +95,7 @@ pub fn Home() -> Html {
 #[function_component(ChangeNameButton)]
 fn change_names() -> Html {
     let store = use_context::<UseReducerHandle<YewTestLab>>()
-        .expect("NameDisplay must be wrapped in ContextProvider");
+        .expect("No Store Context");
 
     let change_names = {
         let store = store.clone();
@@ -177,8 +117,8 @@ fn change_names() -> Html {
 
 #[function_component(Counter)]
 pub fn counter() -> Html {
-    // Initialize the reducer state
-    let store = use_reducer(YewTestLab::default);
+    let store = use_context::<UseReducerHandle<YewTestLab>>()
+        .expect("No Store Context");
 
     // Create action handlers
     let on_increment = {
